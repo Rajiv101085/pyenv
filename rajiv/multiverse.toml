@@ -1,0 +1,11 @@
+[project]
+name = "rajiv"
+python_versions = [ "3.13.1", "3.12.7",]
+
+[environments."3.13.1"]
+path = "envs/py3131"
+requirements = "envs/py3131/requirements.txt"
+
+[environments."3.12.7"]
+path = "envs/py3127"
+requirements = "envs/py3127/requirements.txt"
