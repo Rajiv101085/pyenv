@@ -82,6 +82,25 @@ def set_python_version(version, scope='global'):
     result = run_command(cmd)
     return result and result.returncode == 0
 
+def update_pyenv():
+    """Update pyenv to the latest version."""
+    result = run_command("pyenv update")
+    return result and result.returncode == 0
+
+def list_global_version():
+    """Get the global Python version."""
+    result = run_command("pyenv global", check=False)
+    if result and result.returncode == 0:
+        return result.stdout.strip()
+    return None
+
+def list_local_version():
+    """Get the local Python version."""
+    result = run_command("pyenv local", check=False)
+    if result and result.returncode == 0:
+        return result.stdout.strip()
+    return None
+
 # Virtual Environment Functions
 def create_virtualenv(version, env_name, local=True):
     """Create a new virtual environment."""
@@ -155,19 +174,31 @@ def render_version_management():
                 "Select version",
                 installed
             )
-            col3, col4 = st.columns(2)
+            col3, col4, col5 = st.columns(3)
             with col3:
                 if st.button("Set Global"):
                     if set_python_version(version_to_manage, 'global'):
                         st.success(f"Set {version_to_manage} as global")
                         st.experimental_rerun()
             with col4:
+                if st.button("Set Local"):
+                    if set_python_version(version_to_manage, 'local'):
+                        st.success(f"Set {version_to_manage} as local")
+                        st.experimental_rerun()
+            with col5:
                 if st.button("Uninstall"):
                     if uninstall_version(version_to_manage):
                         st.success(f"Uninstalled {version_to_manage}")
                         st.experimental_rerun()
         else:
             st.info("No Python versions installed")
+
+    st.subheader("Update Pyenv")
+    if st.button("Update Pyenv"):
+        if update_pyenv():
+            st.success("Pyenv updated successfully")
+        else:
+            st.error("Failed to update Pyenv")
 
 def render_virtualenv_management():
     """Render the virtual environment management section."""
